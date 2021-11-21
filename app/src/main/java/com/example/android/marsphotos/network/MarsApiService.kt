@@ -18,7 +18,7 @@ private  val moshi=Moshi.Builder()
 
     private val retrofit = Retrofit.Builder()
 
-            //todo 14 remove scalar calls since we removed the dependency and is using moshi
+        //todo 14 remove scalar calls since we removed the dependency and is using moshi
         //.addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
