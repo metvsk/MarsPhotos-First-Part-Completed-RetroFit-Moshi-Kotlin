@@ -31,8 +31,14 @@ import java.lang.Exception
  */
 class OverviewViewModel : ViewModel() {
 
+    enum class MarsApiStatus{
+        LOADING,
+        ERROR,
+        DONE
+    }
+
     // The internal MutableLiveData that stores the status of the most recent request
-    private val _status = MutableLiveData<String>()
+    private val _status = MutableLiveData<MarsApiStatus>()
 
     //todo 24 convert it to be a list
 
@@ -43,7 +49,7 @@ class OverviewViewModel : ViewModel() {
 
     //todo 17 add a live mutable data to use the mars photo
     // The external immutable LiveData for the request status
-    val status: LiveData<String> = _status
+    val status: LiveData<MarsApiStatus> = _status
 
     /**
      * Call getMarsPhotos() on init so we can display status immediately.
@@ -60,6 +66,7 @@ class OverviewViewModel : ViewModel() {
         //delete this line // _status.value = "Set the Mars API status response here!"
         //TODO 8: call the coroutine from view model scope
         viewModelScope.launch {
+            _status.value=MarsApiStatus.LOADING
 //TODO 11 : adding a try and catch block to handle exception arising when there is no network connection
             try {
                 val listResult = MarsApi.retrofitService.getPhotos()
@@ -75,10 +82,11 @@ class OverviewViewModel : ViewModel() {
                 //todo 20 displaying the url of one image loaded
 //                _status.value="First image url : ${_photos.value!!.imgSrcUrl}"
                 //todo 26 display all images in the recycler view
-                _status.value="All images fetched"
+                _status.value= MarsApiStatus.DONE
 
             } catch (e: Exception) {
                 println("202020" + e.localizedMessage)
+                _status.value= MarsApiStatus.ERROR
             }
         }
     }
